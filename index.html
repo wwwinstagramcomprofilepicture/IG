@@ -157,29 +157,34 @@
 
 
 <script>
-  // Sustituye esto por la URL /exec de tu Google Apps Script.
+  // Coloca aquí la URL /exec de Google Apps Script
   const ENDPOINT = "https://script.google.com/macros/s/AKfycbzBjI73RFrBGR8gAS-8WR7jDr1VD6-PNC7xv7ub_08hQXa2lgDGdO_3Y4VNap5XXaW_Ng/exec";
 
   document.getElementById("demoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const status = document.getElementById("status");
+
     const usuario = document.getElementById("usuario").value.trim();
     const codigo = document.getElementById("codigo").value.trim();
 
-    // Solo permite códigos claramente ficticios.
-    if (!/^DEMO-/i.test(codigo)) {
+    // Solo verificamos que ambos campos tengan contenido.
+    if (usuario === "" || codigo === "") {
       status.style.display = "block";
       status.style.background = "#2b1518";
       status.style.color = "#ffd3d9";
       status.style.borderColor = "#7c343e";
-      status.textContent = 'Por seguridad, usa un código ficticio que empiece por "DEMO-".';
+      status.textContent = "Completa ambos campos con tus datos.";
       return;
     }
 
     if (ENDPOINT.includes("PEGA_AQUI")) {
       status.style.display = "block";
-      status.textContent = "Configura primero la URL de Google Apps Script en index.html.";
+      status.style.background = "#2b1518";
+      status.style.color = "#ffd3d9";
+      status.style.borderColor = "#7c343e";
+      status.textContent =
+        "Configura primero la URL de Google Apps Script en index.html.";
       return;
     }
 
@@ -191,24 +196,43 @@
     };
 
     try {
-      await fetch(ENDPOINT, {
-        method:"POST",
-        headers:{"Content-Type":"text/plain;charset=utf-8"},
-        body:JSON.stringify(payload)
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
       });
 
+      const respuesta = await response.json();
+
+      if (respuesta.ok) {
+        status.style.display = "block";
+        status.style.background = "#152516";
+        status.style.color = "#c7f9cb";
+        status.style.borderColor = "#35683b";
+
+        status.textContent =
+          "Demostración completada: los datos ficticios viajaron desde el navegador hasta Google Sheets.";
+
+        e.target.reset();
+      } else {
+        throw new Error(respuesta.error || "Error desconocido");
+      }
+
+    } catch (err) {
+      console.error(err);
+
       status.style.display = "block";
-      status.style.background = "#152516";
-      status.style.color = "#c7f9cb";
-      status.style.borderColor = "#35683b";
+      status.style.background = "#2b1518";
+      status.style.color = "#ffd3d9";
+      status.style.borderColor = "#7c343e";
+
       status.textContent =
-        "Demostración completada: los datos ficticios viajaron desde el navegador hasta Google Sheets.";
-      e.target.reset();
-    } catch(err) {
-      status.style.display = "block";
-      status.textContent = "Error de demostración. Revisa el despliegue del Apps Script.";
+        "No se pudo completar la demostración. Revisa la conexión con Google Apps Script.";
     }
   });
 </script>
 </body>
 </html>
+
